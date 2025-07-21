@@ -1,0 +1,42 @@
+{
+  "name": "MathOff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@expo/metro-config": "~0.20.0",
+    "@expo/vector-icons": "^14.1.0",
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-firebase/app": "^22.2.1",
+    "@react-native-firebase/auth": "^22.2.1",
+    "@react-navigation/native": "^7.1.14",
+    "@react-navigation/native-stack": "^7.3.21",
+    "expo": "^53.0.13",
+    "expo-av": "~15.1.6",
+    "expo-image": "~2.3.0",
+    "expo-linear-gradient": "^14.1.5",
+    "firebase": "^9.23.0",
+    "matter-js": "^0.20.0",
+    "react-native-game-engine": "^1.2.0",
+    "react-native-gesture-handler": "~2.24.0",
+    "react-native-linear-gradient": "^2.8.3",
+    "react-native-reanimated": "~3.17.4",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "expo-status-bar": "~2.2.3"
+  },
+  "devDependencies": {
+    "@react-native-community/cli": "latest",
+    "@types/matter-js": "^0.19.8",
+    "@types/react": "^19.1.8",
+    "typescript": "^5.8.3"
+  }
+}

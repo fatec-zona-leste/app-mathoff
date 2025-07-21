@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "MathOff",
+    "slug": "MathOff",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5316bd9c-7ce6-42ea-badf-db150666896b"
+      }
+    },
+    "android": {
+      "package": "com.dgmarques.MathOff",
+      "statusBar": {
+        "backgroundColor": "#f0f0f5",
+        "barStyle": "dark-content"
+      }
+    }
+  }
+}
