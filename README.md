@@ -4,7 +4,7 @@
 
 ## MathOff
 
-O **MathOff** é um aplicativo mobile de perguntas e respostas matemáticas, com uma proposta lúdica e interativa para reforçar o aprendizado por meio de um quiz gamificado. O projeto tem como foco o público estudantil e utiliza feedback visual para promover a experiência educativa.
+O MathOff é um aplicativo mobile de perguntas e respostas matemáticas, com uma proposta lúdica e interativa para reforçar o aprendizado por meio de um quiz gamificado. O projeto tem como foco o público estudantil e utiliza feedback visual para promover a experiência educativa.
 ---
 
 ## Objetivo do Projeto
