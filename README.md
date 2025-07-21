@@ -1,6 +1,5 @@
 <p align="center">
-  <img src="imgs/
-    logo-mo.jpg" alt="MathOff Logo" width="200" style="border-radius: 16px;"/>
+  <img src="imgs/logo-mo.jpg" alt="MathOff Logo" width="200" style="border-radius: 16px;"/>
 </p>
 
 # MathOff
