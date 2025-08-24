@@ -5,24 +5,26 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import styles from "./styles/StyleChoise";
 import BubbleBackground from "./background/BubbleBackground";
 import MathSymbolBackground from "./background/MathSymbolBackground";
-import { RootStackParamList } from "../types"; 
+import { RootStackParamList } from "../types";
+import { useLanguage } from "../locales/translater";
 
 export default function OthersGames() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { t } = useLanguage();
 
   return (
     <View style={styles.container}>
       <BubbleBackground />
 
-      <Text style={styles.title}>Outros Modos</Text>
-      <Text style={styles.subtitle}>Escolha uma forma diferente de jogar:</Text>
+      <Text style={styles.title}>{t("other_modes")}</Text>
+      <Text style={styles.subtitle}>{t("choose_different_mode")}</Text>
 
       <TouchableOpacity
         style={[styles.button, { backgroundColor: "#28a745" }]}
         onPress={() => navigation.navigate("Relax")}
       >
         <MathSymbolBackground />
-        <Text style={styles.buttonText}>Relax</Text>
+        <Text style={styles.buttonText}>{t("relax")}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -30,7 +32,7 @@ export default function OthersGames() {
         onPress={() => navigation.navigate("Hunter")}
       >
         <MathSymbolBackground />
-        <Text style={styles.buttonText}>Caça</Text>
+        <Text style={styles.buttonText}>{t("hunt")}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -38,7 +40,7 @@ export default function OthersGames() {
         onPress={() => navigation.navigate("Fast")}
       >
         <MathSymbolBackground />
-        <Text style={styles.buttonText}>Turbo</Text>
+        <Text style={styles.buttonText}>{t("turbo")}</Text>
       </TouchableOpacity>
     </View>
   );

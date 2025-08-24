@@ -23,20 +23,20 @@ const { width } = Dimensions.get('window');
 const slides = [
   {
     key: '1',
-    title: 'Bem-vindo ao MathOff!',
-    description: 'Desafie sua mente com cálculos rápidos e melhore sua agilidade mental.',
+    title: 'Welcome to MathOff!',
+    description: 'Challenge your mind with quick calculations and improve your mental agility.',
     image: require('../assets/img1.png'),
   },
   {
     key: '2',
-    title: 'Três níveis de desafio',
-    description: 'Escolha entre fácil, médio ou difícil e avance seu raciocínio lógico!',
+    title: 'Three challenge levels',
+    description: 'Choose between easy, medium or hard and advance your logical reasoning!',
     image: require('../assets/img2.png'),
   },
   {
     key: '3',
-    title: 'Diversas operações',
-    description: 'Treine adição, subtração, multiplicação ou divisão — você escolhe!',
+    title: 'Various operations',
+    description: 'Practice addition, subtraction, multiplication or division — you choose!',
     image: require('../assets/img3.png'),
   },
 ];

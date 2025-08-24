@@ -12,10 +12,15 @@ import styles from '../styles/StyleGame';
 import MathBubblesBackground from "../background/MathBubblesBackground";
 import MathSymbolBackground from "../background/MathSymbolBackground";
 import { useScore } from "../../context/ScoreContext"; 
+import { useLanguage } from "../../locales/translater"; // hook de tradução
+
+const successSound = require('../../assets/sounds/acerto.mp3');
+const errorSound = require('../../assets/sounds/erro.mp3');
 
 export default function TurboModeScreen() {
   const navigation = useNavigation();
   const { addScore } = useScore(); 
+  const { t } = useLanguage(); // hook de tradução
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState(0);
@@ -36,13 +41,11 @@ export default function TurboModeScreen() {
     const sound = new Audio.Sound();
     try {
       await sound.loadAsync(
-        type === "correct"
-          ? require("../../assets/sounds/acerto.mp3")
-          : require("../../assets/sounds/erro.mp3")
+        type === "correct" ? successSound : errorSound
       );
       await sound.playAsync();
     } catch (err) {
-      console.warn("Erro ao reproduzir som:", err);
+      console.warn(t('sound_error'), err);
     }
   };
 
@@ -72,15 +75,15 @@ export default function TurboModeScreen() {
   };
 
   const handleEndGame = () => {
-    addScore(score, undefined, undefined, "Turbo"); 
+    addScore(score, undefined, undefined, t('turbo_mode')); 
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <MathBubblesBackground style={StyleSheet.absoluteFill} />
-      <Text style={styles.timer}>⏱️ Tempo: {timeLeft}s</Text>
-      <Text style={styles.title}>Turbo Mode ⚡</Text>
+      <Text style={styles.timer}>⏱️ {t('time')}: {timeLeft}s</Text>
+      <Text style={styles.title}>{t('turbo_mode')} ⚡</Text>
       <Text style={styles.question}>{question}</Text>
 
       <TextInput
@@ -90,24 +93,24 @@ export default function TurboModeScreen() {
         onChangeText={setInput}
         onSubmitEditing={handleSubmit}
         placeholderTextColor="#aaa"
-        placeholder="Digite a resposta"
+        placeholder={t('type_answer')}
         editable={timeLeft > 0}
       />
 
       {timeLeft > 0 && (
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
           <MathSymbolBackground />
-          <Text style={styles.buttonText}>Responder</Text>
+          <Text style={styles.buttonText}>{t('submit')}</Text>
         </TouchableOpacity>
       )}
 
-      <Text style={styles.score}>Pontuação: {score}</Text>
+      <Text style={styles.score}>{t('score')}: {score}</Text>
 
       {timeLeft === 0 && (
         <>
-          <Text style={styles.finalScore}>🏆 Pontuação final: {score}</Text>
+          <Text style={styles.finalScore}>🏆 {t('final_score')}: {score}</Text>
           <TouchableOpacity style={styles.button} onPress={handleEndGame}>
-            <Text style={styles.buttonText}>Fim! Voltar</Text>
+            <Text style={styles.buttonText}>{t('end_back')}</Text>
           </TouchableOpacity>
         </>
       )}

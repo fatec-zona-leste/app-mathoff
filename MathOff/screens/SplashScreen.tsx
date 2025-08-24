@@ -1,28 +1,23 @@
 import React, { useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { useLanguage } from '../locales/translater';
 
 export default function SplashScreen() {
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const checkOnboarding = async () => {
       const alreadySeen = await AsyncStorage.getItem('onboardingVisto');
 
       if (alreadySeen === 'true') {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
+        navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
       } else {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Onboarding' }],
-        });
+        navigation.reset({ index: 0, routes: [{ name: 'Onboarding' }] });
       }
     };
 
@@ -32,10 +27,12 @@ export default function SplashScreen() {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#009af2" />
+      <Text style={styles.loadingText}>{t("loading")}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { marginTop: 10, fontSize: 16, color: '#333' },
 });

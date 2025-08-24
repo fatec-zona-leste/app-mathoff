@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import styles from './styles/StyleLogin';
 import BubbleBackground from "./background/BubbleBackground";
 import MathSymbolBackground from './background/MathSymbolBackground';
-import { setUserToken } from '../authSession';
-import { setUserEmail } from '../authSession'; 
+import { setUserToken, setUserEmail } from '../authSession';
+import { useLanguage } from '../locales/translater';
 
 type RootParamList = {
   Signup: undefined;
@@ -15,18 +15,25 @@ type RootParamList = {
   ResetPassword: undefined;
 };
 
-const FIREBASE_API_KEY = "AIzaSyBTnPyNYc2IZNGceCLwC9pvkRA6jz5-uxA";
-
 type AuthNavigationProp = NativeStackNavigationProp<RootParamList>;
+
+const FIREBASE_API_KEY = "AIzaSyBTnPyNYc2IZNGceCLwC9pvkRA6jz5-uxA";
 
 export default function LoginScreen() {
   const navigation = useNavigation<AuthNavigationProp>();
+  const { t, language } = useLanguage();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Atualiza título da tela conforme idioma
+  useLayoutEffect(() => {
+    navigation.setOptions({ title: t('login') });
+  }, [navigation, language, t]);
+
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Erro', 'Preencha todos os campos.');
+      Alert.alert(t('error'), t('fill_fields'));
       return;
     }
 
@@ -47,38 +54,38 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (!response.ok) {
-        let message = 'Erro ao fazer login.';
+        let message = t('login_error');
         if (data?.error?.message) {
           switch (data.error.message) {
             case 'EMAIL_NOT_FOUND':
-              message = 'E-mail não encontrado.';
+              message = t('email_not_found');
               break;
             case 'INVALID_PASSWORD':
-              message = 'Senha incorreta.';
+              message = t('wrong_password');
               break;
             case 'USER_DISABLED':
-              message = 'Usuário desativado.';
+              message = t('user_disabled');
               break;
           }
         }
-        Alert.alert('Erro', message);
+        Alert.alert(t('error'), message);
         return;
       }
 
-      await setUserToken(data.idToken); // SALVA O TOKEN AQUI
-      await setUserEmail(email); // <- salve o email
+      await setUserToken(data.idToken);
+      await setUserEmail(email);
 
-      Alert.alert('Sucesso', 'Login realizado com sucesso!');
+      Alert.alert(t('success'), t('login_success'));
       navigation.replace('Home');
     } catch (error) {
       console.error('Erro no login:', error);
-      Alert.alert('Erro', 'Erro ao conectar com o servidor.');
+      Alert.alert(t('error'), t('server_error'));
     }
   };
 
   const handlePasswordReset = async () => {
     if (!email) {
-      Alert.alert('Erro', 'Informe seu e-mail para redefinir a senha.');
+      Alert.alert(t('error'), t('provide_email_reset'));
       return;
     }
 
@@ -98,18 +105,18 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (!response.ok) {
-        let message = 'Erro ao solicitar redefinição.';
+        let message = t('reset_error');
         if (data?.error?.message === 'EMAIL_NOT_FOUND') {
-          message = 'E-mail não encontrado.';
+          message = t('email_not_found');
         }
-        Alert.alert('Erro', message);
+        Alert.alert(t('error'), message);
         return;
       }
 
-      Alert.alert('Sucesso', 'Email de redefinição enviado!');
+      Alert.alert(t('success'), t('reset_success'));
     } catch (error) {
       console.error('Erro ao redefinir senha:', error);
-      Alert.alert('Erro', 'Erro ao conectar com o servidor.');
+      Alert.alert(t('error'), t('server_error'));
     }
   };
 
@@ -120,11 +127,11 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <BubbleBackground />
-      <Text style={styles.title}>Entrar</Text>
+      <Text style={styles.title}>{t('login')}</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder={t('email')}
         placeholderTextColor="#aaa"
         value={email}
         onChangeText={setEmail}
@@ -136,7 +143,7 @@ export default function LoginScreen() {
 
       <TextInput
         style={styles.input}
-        placeholder="Senha"
+        placeholder={t('password')}
         placeholderTextColor="#aaa"
         value={password}
         onChangeText={setPassword}
@@ -146,16 +153,16 @@ export default function LoginScreen() {
       />
 
       <TouchableOpacity onPress={handlePasswordReset}>
-        <Text style={styles.link}>Esqueceu sua senha?</Text>
+        <Text style={styles.link}>{t('forgot_password')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={goToSignup}>
-        <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
+        <Text style={styles.link}>{t('no_account')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <MathSymbolBackground />
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>{t('login')}</Text>
       </TouchableOpacity>
     </View>
   );

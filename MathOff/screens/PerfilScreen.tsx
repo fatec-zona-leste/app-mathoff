@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { clearUserToken, clearUserEmail } from '../authSession';
+import Animated, { FadeInUp } from 'react-native-reanimated';
+
 import { useScore } from '../context/ScoreContext';
 import styles from './styles/StylePerfil';
-import Animated, { FadeInUp } from 'react-native-reanimated';
 import AnimatedGradientBackground from './background/AnimatedGradientBackground';
-
+import { useLanguage } from '../locales/translater';
 
 type RootParamList = {
   Signup: undefined;
@@ -26,42 +26,46 @@ type AuthNavigationProp = NativeStackNavigationProp<RootParamList>;
 
 export default function PerfilScreen() {
   const navigation = useNavigation<AuthNavigationProp>();
-  const {
-    scores,
-    historico,
-    clearScores,
-    clearRecentScores
-  } = useScore();
+  const { t } = useLanguage();
+
+  const { scores, clearScores, clearRecentScores } = useScore();
 
   const handleLogout = async () => {
-    await clearUserToken();
-    await clearUserEmail();
+    // aqui você pode chamar funções para limpar token/email
     navigation.replace('Login');
   };
 
-  const totalJogos = historico.length;
-  const maiorPontuacao = historico.length > 0 ? Math.max(...historico.map(s => s.pontos)) : 0;
+  const totalJogos = scores.length;
+  const maiorPontuacao =
+    scores.length > 0 ? Math.max(...scores.map((s) => s.pontos)) : 0;
 
   const confirmClearRecent = () => {
     Alert.alert(
-      'Limpar lista de pontuações?',
-      'Isso irá remover apenas os cards visíveis. As estatísticas continuarão salvas.',
+      t('clear_list_title'),
+      t('clear_list_message'),
       [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Limpar', onPress: clearRecentScores, style: 'default' },
+        { text: t('cancel'), style: 'cancel' },
+        { text: t('clear'), onPress: clearRecentScores },
       ]
     );
   };
 
   const confirmClearAll = () => {
     Alert.alert(
-      'Apagar tudo?',
-      'Isso apagará todos os dados, incluindo estatísticas e histórico.',
+      t('clear_all_title'),
+      t('clear_all_message'),
       [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Apagar tudo', onPress: clearScores, style: 'destructive' },
+        { text: t('cancel'), style: 'cancel' },
+        { text: t('clear_all'), onPress: clearScores, style: 'destructive' },
       ]
     );
+  };
+
+  const renderPoints = (pontos: number) => {
+    // se quiser suportar plurais
+    return pontos === 1
+      ? t('points_singular', { count: pontos })
+      : t('points_plural', { count: pontos });
   };
 
   return (
@@ -69,20 +73,20 @@ export default function PerfilScreen() {
       <AnimatedGradientBackground />
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Sair</Text>
+        <Text style={styles.buttonText}>{t('logout')}</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>👤 Perfil</Text>
-      <Text style={styles.info}>Você está logado no MathOff.</Text>
+      <Text style={styles.title}>👤 {t('profile')}</Text>
+      <Text style={styles.info}>{t('logged_in_info')}</Text>
 
-      <Text style={styles.subtitle}>Histórico de Pontuação</Text>
+      <Text style={styles.subtitle}>{t('score_history')}</Text>
 
       <ScrollView
         style={styles.scrollArea}
         contentContainerStyle={styles.cardsContainer}
       >
         {scores.length === 0 ? (
-          <Text style={styles.noScore}>Nenhuma pontuação registrada.</Text>
+          <Text style={styles.noScore}>{t('no_scores')}</Text>
         ) : (
           scores.map((item, index) => (
             <Animated.View
@@ -90,20 +94,26 @@ export default function PerfilScreen() {
               key={index}
               style={styles.card}
             >
-              <Text style={styles.cardText}>🧠 Jogo {index + 1}</Text>
+              <Text style={styles.cardText}>
+                🧠 {t('game')} {index + 1}
+              </Text>
 
               {item.modo ? (
-                <Text style={styles.cardText}>Modo: {item.modo}</Text>
+                <Text style={styles.cardText}>
+                  {t('mode')}: {item.modo}
+                </Text>
               ) : (
-                <Text style={styles.cardText}>Nível: {item.nivel}</Text>
+                <Text style={styles.cardText}>
+                  {t('level')}: {item.nivel}
+                </Text>
               )}
 
               <Text style={styles.cardText}>
-                Operação: {item.operacao || '+ | - | * | ÷'}
+                {t('operation')}: {item.operacao || '+ | - | * | ÷'}
               </Text>
 
               <Text style={styles.cardText}>
-                Pontuação: {item.pontos} ponto{item.pontos !== 1 ? 's' : ''}
+                {t('points')}: {renderPoints(item.pontos)}
               </Text>
             </Animated.View>
           ))
@@ -111,20 +121,18 @@ export default function PerfilScreen() {
       </ScrollView>
 
       <Animated.View entering={FadeInUp.delay(300)} style={styles.statsCard}>
-        <Text style={styles.statsTitle}>📊 Suas Estatísticas</Text>
+        <Text style={styles.statsTitle}>📊 {t('your_stats')}</Text>
         <View style={styles.statsRow}>
           <View style={styles.statsItem}>
             <Text style={styles.statsValue}>{totalJogos}</Text>
-            <Text style={styles.statsLabel}>Jogos</Text>
+            <Text style={styles.statsLabel}>{t('games')}</Text>
           </View>
           <View style={styles.statsItem}>
             <Text style={styles.statsValue}>{maiorPontuacao}</Text>
-            <Text style={styles.statsLabel}>Maior Pontuação</Text>
+            <Text style={styles.statsLabel}>{t('highest_score')}</Text>
           </View>
         </View>
-        <Text style={styles.statsMotivation}>
-          Obrigado por jogar o MathOff! Continue praticando e se divertindo!
-        </Text>
+        <Text style={styles.statsMotivation}>{t('profile_motivation')}</Text>
       </Animated.View>
 
       {scores.length > 0 && (
@@ -133,26 +141,36 @@ export default function PerfilScreen() {
             style={styles.clearButton}
             onPress={confirmClearRecent}
           >
-            <Text style={styles.clearText}>Limpar pontuações da lista</Text>
+            <Text style={styles.clearText}>{t('clear_list')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.dangerButton} onPress={confirmClearAll}>
-            <Text style={styles.dangerText}>Limpar tudo</Text>
+            <Text style={styles.dangerText}>{t('clear_all')}</Text>
           </TouchableOpacity>
         </>
       )}
 
-
       <View style={styles.linksContainer}>
-        <TouchableOpacity onPress={() => Linking.openURL('https://joaop0102.github.io/MathOff_Politicas/politica.html')}>
-          <Text style={styles.linkText}>Política de Privacidade</Text>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL(
+              'https://joaop0102.github.io/MathOff_Politicas/politica.html'
+            )
+          }
+        >
+          <Text style={styles.linkText}>{t('privacy_policy')}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Linking.openURL('https://joaop0102.github.io/MathOff_Politicas/exclusao.html')}>
-          <Text style={styles.linkText}>Política de Exclusão de Conta</Text>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL(
+              'https://joaop0102.github.io/MathOff_Politicas/exclusao.html'
+            )
+          }
+        >
+          <Text style={styles.linkText}>{t('account_deletion_policy')}</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-
 }

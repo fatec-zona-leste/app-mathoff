@@ -3,8 +3,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   Animated,
+  StyleSheet, // ⚡ corrigido
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/StyleGame';
@@ -12,6 +12,7 @@ import MathBubblesBackground from '../background/MathBubblesBackground';
 import MathSymbolBackground from '../background/MathSymbolBackground';
 import { Audio } from 'expo-av';
 import { useScore } from '../../context/ScoreContext'; 
+import { useLanguage } from '../../locales/translater';
 
 const successSound = require('../../assets/sounds/acerto.mp3');
 const errorSound = require('../../assets/sounds/erro.mp3');
@@ -23,7 +24,6 @@ const generateEquation = (level: number, operationType: string) => {
   } else {
     operations = [operationType];
   }
-
   const op = operations[Math.floor(Math.random() * operations.length)];
   let a = Math.floor(Math.random() * (level * 10)) + 1;
   let b = Math.floor(Math.random() * (level * 10)) + 1;
@@ -35,7 +35,8 @@ const generateEquation = (level: number, operationType: string) => {
 
 export default function RelaxScreen() {
   const navigation = useNavigation();
-  const { addScore } = useScore(); // NOVO
+  const { addScore } = useScore(); 
+  const { t } = useLanguage();
 
   const level = 2;
   const operationType = 'any';
@@ -52,11 +53,16 @@ export default function RelaxScreen() {
 
   const playSound = async (soundFile: any) => {
     try {
-      const { sound } = await Audio.Sound.createAsync(soundFile, { shouldPlay: true });
+      const { sound } = await Audio.Sound.createAsync(soundFile);
+      await sound.playAsync();
       sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded && status.didJustFinish) sound.unloadAsync();
+        if (!status.isLoaded || status.didJustFinish) {
+          sound.unloadAsync();
+        }
       });
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Erro ao reproduzir som', e);
+    }
   };
 
   const animateBackground = (toValue: number, onEnd?: () => void) => {
@@ -73,11 +79,11 @@ export default function RelaxScreen() {
     if (Number(input) === questionData.answer) {
       playSound(successSound);
       setScore(score + 1);
-      setFeedback('✅ Correto!');
+      setFeedback('✅ ' + t('correct'));
       setTargetColor('green');
     } else {
       playSound(errorSound);
-      setFeedback(`❌ Errado! Resposta: ${questionData.answer}`);
+      setFeedback(`❌ ${t('wrong')}: ${questionData.answer}`);
       setTargetColor('red');
     }
 
@@ -95,8 +101,8 @@ export default function RelaxScreen() {
 
   useEffect(() => {
     if (counter >= maxQuestions) {
-      addScore(score, undefined, undefined, "Relax"); // NOVO
-      navigation.goBack();
+      addScore(score, undefined, undefined, t('relax_mode')); 
+      if (navigation.canGoBack()) navigation.goBack();
     }
   }, [counter]);
 
@@ -113,7 +119,7 @@ export default function RelaxScreen() {
   return (
     <Animated.View style={[styles.container, { backgroundColor }]}>
       <MathBubblesBackground style={StyleSheet.absoluteFill} />
-      <Text style={styles.title}>Sem contagem</Text>
+      <Text style={styles.title}>{t('relax_mode')}</Text>
       <Text style={styles.question}>{questionData.question}</Text>
 
       <TextInput
@@ -122,16 +128,16 @@ export default function RelaxScreen() {
         value={input}
         onChangeText={setInput}
         onSubmitEditing={handleSubmit}
-        placeholder="Digite a resposta"
+        placeholder={t('type_answer')}
         placeholderTextColor="#aaa"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <MathSymbolBackground />
-        <Text style={styles.buttonText}>Responder</Text>
+        <Text style={styles.buttonText}>{t('submit')}</Text>
       </TouchableOpacity>
 
-      <Text style={styles.score}>Pontuação: {score}</Text>
+      <Text style={styles.score}>{t('score')}: {score}</Text>
       {feedback && <Text style={styles.feedback}>{feedback}</Text>}
     </Animated.View>
   );
