@@ -18,7 +18,7 @@ import HunterScreen from './screens/Game/HunterScreen';
 import FastScreen from './screens/Game/FastScreen';
 
 import { ScoreProvider } from './context/ScoreContext';
-import { LanguageProvider } from './locales/translater'; // ajuste o caminho se necessário
+import { LanguageProvider } from './locales/translater'; 
 
 import { RootStackParamList } from './types';
 
