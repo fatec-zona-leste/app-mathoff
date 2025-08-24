@@ -1,4 +1,3 @@
-// src/locales/translater.tsx
 import React, {
     createContext,
     useContext,
