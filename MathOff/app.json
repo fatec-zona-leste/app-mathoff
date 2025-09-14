@@ -23,6 +23,9 @@
         "backgroundColor": "#f0f0f5",
         "barStyle": "dark-content"
       }
-    }
+    },
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }
